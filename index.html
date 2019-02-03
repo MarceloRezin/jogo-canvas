@@ -18,7 +18,7 @@
         <script>
             //Variáveis do jogo
 
-            var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3,
+            var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6,
             
             chao = {
                 y: 550,
@@ -64,6 +64,53 @@
                     ctx.fillRect(this.x, this.y, this.altura, this.largura);
                 }
 
+            },
+            
+            obstaculos = {
+                _obs: [],
+                cores: ["#FFBC1C", "#FF1C1C", "#FF85E1", "#52A7FF", "#78FF5D"],
+                tempoInsere: 0,
+
+                insere: function(){
+                    this._obs.push({
+                        x: LARGURA,
+                        largura: 30 + Math.floor(21 * Math.random()),
+                        altura: 30 + Math.floor(121 * Math.random()),
+                        cor: this.cores[Math.floor(5 * Math.random())]
+                    });
+
+                    this.tempoInsere = 30 + Math.floor(21 * Math.random());
+                },
+
+                atualiza: function(){
+                    if(this.tempoInsere == 0){
+                        this.insere();
+                    }else{
+                        this.tempoInsere--;
+                    }
+
+                    for (var i = 0, tam = this._obs.length; i < tam; i++) {
+                        var obs = this._obs[i];
+
+                        obs.x -= velocidade;
+
+                        if(obs.x <= -obs.largura){
+                            this._obs.splice(i, 1);
+
+                            tam --;
+                            i --;
+                        }
+                    }
+                },
+
+                desenha: function(){
+                    for(var i=0, tam = this._obs.length; i<tam; i++){
+                        var obs = this._obs[i];
+
+                        ctx.fillStyle = obs.cor;
+                        ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura);
+                    }
+                }
             };
 
             function clique(event){
@@ -102,6 +149,7 @@
                 frames ++;
 
                 bloco.atualiza();
+                obstaculos.atualiza();
             }
 
             function desenha(){
@@ -109,6 +157,7 @@
                 ctx.fillRect(0, 0, LARGURA, ALTURA);
 
                 chao.desenha();
+                obstaculos.desenha();
                 bloco.desenha();
             }
 
