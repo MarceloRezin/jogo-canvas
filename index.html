@@ -18,11 +18,18 @@
         <script>
             //Variáveis do jogo
 
-            var canvas,
-                ctx,
-                ALTURA,
-                LARGURA,
-                frames = 0;
+            var canvas, ctx, ALTURA, LARGURA, frames = 0,
+            
+            chao = {
+                y: 550,
+                altura: 50,
+                cor: "#FFDF70",
+
+                desenha: function(){
+                    ctx.fillStyle = this.cor;
+                    ctx.fillRect(0, this.y, LARGURA, this.altura);
+                }
+            };
 
             function clique(event){
                 alert("CLIQUE");
@@ -63,6 +70,8 @@
             function desenha(){
                 ctx.fillStyle = "#50BEFF";
                 ctx.fillRect(0, 0, LARGURA, ALTURA);
+
+                chao.desenha();
             }
 
             //Inicializa o jogo
