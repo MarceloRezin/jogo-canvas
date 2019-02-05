@@ -47,6 +47,7 @@
                 velocidade: 0,
                 forcaPulo: 23.6,
                 qtdPulos: 0,
+                score: 0,
 
                 atualiza: function(){
                     this.velocidade += this.gravidade;
@@ -67,8 +68,9 @@
                 },
 
                 reset: function(){
-                    bloco.y = 0;
-                    bloco.velocidade = 0;
+                    this.y = 0;
+                    this.velocidade = 0;
+                    this.score = 0;
                 },
 
                 desenha: function(){
@@ -109,6 +111,8 @@
 
                         if(bloco.x < obs.x + obs.largura && bloco.x + bloco.largura >= obs.x && bloco.y + bloco.altura >= chao.y - obs.altura){
                             estadoAtual = estados.perdeu;
+                        } else if(obs.x == 0){
+                            bloco.score++;
                         } else if(obs.x <= -obs.largura){
                             this._obs.splice(i, 1);
 
@@ -188,12 +192,33 @@
                 ctx.fillStyle = "#80DAFF";
                 ctx.fillRect(0, 0, LARGURA, ALTURA);
 
+                ctx.fillStyle = "#FFF";
+                ctx.font = "50px Arial";
+                ctx.fillText(bloco.score, 30, 68);
+
                 if(estadoAtual == estados.jogar){
                     ctx.fillStyle = "green";
                     ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100);
                 }else if(estadoAtual == estados.perdeu){
                     ctx.fillStyle = "red";
                     ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100);
+                    
+                    ctx.save();
+                    ctx.translate(LARGURA / 2, ALTURA / 2);
+                    ctx.fillStyle = "#FFF";
+                    
+                    if(bloco.score < 10){
+                        ctx.fillText(bloco.score, -13, 19);
+                    }else if (bloco.score > 9 && bloco.score < 100) {
+                        ctx.fillText(bloco.score, -26, 19);
+                    }else{
+                        ctx.fillText(bloco.score, -39, 19);
+                    }
+                    
+
+
+                    ctx.restore();
+
                 }else if(estadoAtual == estados.jogando){
                     obstaculos.desenha();
                 }
